@@ -103,6 +103,7 @@ UnsafeIdent: Cow<'input, str> = {
   "module" => Cow::from("module"),
   "this" => Cow::from("this"),
   "record" => Cow::from("record"),
+  "sealed" => Cow::from("sealed"),
   "var" => Cow::from("var"),
   "exports" => Cow::from("exports"),
   "requires" => Cow::from("requires"),
