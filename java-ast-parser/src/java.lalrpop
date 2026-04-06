@@ -126,11 +126,11 @@ MayBeTrailingCommaList<T>: Box<[T]> = {
 AmpersandList<T>: Box<[T]> = <first:T> <mut rest:("&" <T>)*> => { rest.insert(0, first); rest.into_boxed_slice() };
 PeriodList<T>: Box<[T]> = <first:T> <mut rest:("." <T>)*> => { rest.insert(0, first); rest.into_boxed_slice() };
 
-Package: Cow<'input, str> = "package" <p:Path> ";" => p;
+Package: Cow<'input, str> = "package" <p:Path> ";"+ => p;
 
 #[inline]
 ImportPath: Cow<'input, str> = <l:@L> UnsafeIdent ("." UnsafeIdent)* ("." "*")? <r:@R> => Cow::from(&input[l..r]);
-Import: Cow<'input, str> = "import" "static"? <p:ImportPath> ";" => p;
+Import: Cow<'input, str> = "import" "static"? <p:ImportPath> ";"+ => p;
 
 Modifier: ast::Modifiers = {
   "public" => ast::Modifiers::PUBLIC,
