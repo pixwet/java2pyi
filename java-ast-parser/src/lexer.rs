@@ -56,6 +56,11 @@ fn string_from_lexer<'a>(lex: &mut logos::Lexer<'a, Token<'a>>) -> Cow<'a, str> 
     Cow::from(&slice[1..slice.len() - 1])
 }
 
+fn text_block_from_lexer<'a>(lex: &mut logos::Lexer<'a, Token<'a>>) -> Cow<'a, str> {
+    let slice = lex.slice();
+    Cow::from(&slice[3..slice.len() - 3])
+}
+
 /// Token kinds produced by the lexer.
 #[derive(Clone, Debug, PartialEq, Logos, IntoOwned)]
 #[logos(error = LexicalErrorKind)]
@@ -338,6 +343,7 @@ pub enum Token<'a> {
     )]
     CharLiteral(Cow<'a, str>),
 
+    #[regex(r#"(?s)""".*?""""#, text_block_from_lexer)]
     #[regex(r#""([^"\\]*(?:\\.[^"\\]*)*)""#, string_from_lexer)]
     String(Cow<'a, str>),
 
