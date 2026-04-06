@@ -212,15 +212,20 @@ FunctionArgument: ast::FunctionArgument
 #[inline]
 FunctionEnd: () = { "{" "}", ";" };
 
+#[inline]
+FunctionReturnArraySuffix: usize = <a:("[" "]")*> => a.len();
+
 Function: ast::Function
-  = <m:Modifiers> <g:GenericDefinitions?> <rt:QualifiedType> <i:UnsafeIdent?> "(" <args:CommaList<FunctionArgument>?> ")" ("throws" CommaList<QualifiedType>)? FunctionEnd
-  => ast::Function {
+  = <m:Modifiers> <g:GenericDefinitions?> <mut rt:QualifiedType> <i:UnsafeIdent?> "(" <args:CommaList<FunctionArgument>?> ")" <a:FunctionReturnArraySuffix> ("throws" CommaList<QualifiedType>)? FunctionEnd
+  => {
+    rt.last_mut().unwrap().array_depth += a;
+    ast::Function {
     modifiers: m,
     generics: g.unwrap_or(Box::from([])),
     return_type: rt,
     ident: i.unwrap_or_else(|| Cow::from("__ctor")).to_string(),
     arguments: args.unwrap_or(Box::from([]))
-  };
+  }};
 
 InterfaceEntry: ast::InterfaceEntry = {
   <v:Variables> => ast::InterfaceEntry::Variables(v),
